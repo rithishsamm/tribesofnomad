@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Experiences | Tribes of Nomad</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Reenie+Beanie&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ==========================================================================
+       RESPONSIVE HEADER & DROPDOWN MENU UPDATES
+       ========================================================================== */
+    
+    /* Force the header into a single row, overriding any external styles.css */
+    .header-container { 
+      display: flex !important; 
+      flex-direction: row !important; 
+      align-items: center !important; 
+      justify-content: space-between !important; 
+      position: relative; 
+      width: 100%; 
+      padding: 16px 0 !important; 
+      flex-wrap: nowrap !important;
+    }
+    
+    .header-actions { 
+      display: flex !important; 
+      flex-direction: row !important; 
+      align-items: center !important; 
+      gap: 12px !important; 
+    }
+
+    .logo {
+      margin: 0 !important;
+      white-space: nowrap !important;
+    }
+
+    .hamburger { 
+      display: none; 
+      background: transparent; 
+      border: none; 
+      cursor: pointer; 
+      flex-direction: column; 
+      gap: 5px; 
+      padding: 4px; 
+      z-index: 101; 
+    }
+    
+    .hamburger span { 
+      display: block; 
+      width: 24px; 
+      height: 2px; 
+      background-color: var(--forest, #18382B); 
+      transition: 0.3s ease; 
+      border-radius: 2px; 
+    }
+
+    /* Desktop Navigation */
+    .nav-menu { 
+      display: flex; 
+      gap: 24px; 
+      list-style: none; 
+      margin: 0; 
+      padding: 0; 
+      align-items: center; 
+    }
+
+    /* Mobile/Tablet Breakpoints */
+    @media (max-width: 991px) {
+      .hamburger { display: flex !important; }
+      
+      /* Mobile Dropdown Menu (Top-Right Box) */
+      .nav-menu { 
+        display: none !important; /* Hidden by default */
+        flex-direction: column; 
+        width: 200px; /* Fixed width box */
+        position: absolute;
+        top: 100%;
+        right: 0; /* Anchored to the right */
+        left: auto;
+        background-color: rgba(245, 239, 227, 0.98); 
+        backdrop-filter: blur(8px);
+        padding: 16px 24px; 
+        border: 1px solid rgba(24, 56, 43, 0.15); 
+        border-radius: 4px; 
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        gap: 16px; 
+        align-items: flex-end; /* Align links to the right */
+        text-align: right;
+        z-index: 100;
+      }
+      
+      .nav-menu.show {
+        display: flex !important;
+      }
+      
+      .nav-menu a { font-size: 0.85rem; width: 100%; display: block; }
+    }
+
+    @media (max-width: 480px) {
+      /* Shrink elements slightly on small phones so everything fits on one line */
+      .logo {
+        font-size: 1.1rem !important;
+      }
+      .header-actions .btn-sun {
+        font-size: 0.65rem !important;
+        padding: 0 12px !important;
+        min-height: 36px !important;
+      }
+    }
+
+    /* ==========================================================================
+       PAGE SPECIFIC STYLES (Reviews, etc)
+       ========================================================================== */
+    .review-stickers {
+      --review-ink: #1c2642;
+      --review-paper: #fffdf5;
+      --review-sun: #ffcf45;
+      --review-pink: #ff8c7a;
+      --review-sky: #9fd5ec;
+      background: #f5efe1;
+      overflow: hidden;
+      padding: clamp(64px, 8vw, 112px) 0;
+      position: relative;
+    }
+
+    .review-stickers::before,
+    .review-stickers::after {
+      border: 2px solid rgba(28, 38, 66, 0.15);
+      border-radius: 50%;
+      content: "";
+      height: 220px;
+      pointer-events: none;
+      position: absolute;
+      width: 220px;
+    }
+
+    .review-stickers::before { left: -92px; top: 64px; }
+    .review-stickers::after { bottom: -120px; right: -80px; }
+
+    .reviews-heading {
+      align-items: end;
+      display: flex;
+      gap: 32px;
+      justify-content: space-between;
+      margin-bottom: 48px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .reviews-heading .display-title { margin: 8px 0 0; }
+
+    .reviews-source {
+      align-items: center;
+      background: var(--review-ink);
+      border-radius: 999px;
+      color: #fff;
+      display: inline-flex;
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      gap: 9px;
+      letter-spacing: 0.03em;
+      padding: 12px 16px;
+      text-decoration: none;
+      transition: transform 180ms ease, background 180ms ease;
+      white-space: nowrap;
+    }
+
+    .reviews-source:hover { background: #32456f; transform: translateY(-2px); }
+
+    .google-mark {
+      align-items: center;
+      background: #fff;
+      border-radius: 50%;
+      color: #4285f4;
+      display: inline-flex;
+      font-family: Arial, sans-serif;
+      font-size: 0.95rem;
+      font-weight: 800;
+      height: 20px;
+      justify-content: center;
+      width: 20px;
+    }
+
+    .review-sticker-grid {
+      display: grid;
+      gap: 34px 28px;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
+
+    .review-sticker {
+      background: var(--review-paper);
+      border: 2px solid var(--review-ink);
+      box-shadow: 7px 8px 0 var(--review-ink);
+      color: var(--review-ink);
+      display: flex;
+      flex-direction: column;
+      padding: 26px;
+      position: relative;
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .review-sticker:hover {
+      box-shadow: 11px 12px 0 var(--review-ink);
+      transform: translate(-3px, -4px) rotate(0deg);
+    }
+
+    .review-sticker:nth-child(3n+1) { background: #fff9e9; transform: rotate(-2.4deg); }
+    .review-sticker:nth-child(3n+2) { background: #fff; transform: rotate(1.7deg); }
+    .review-sticker:nth-child(3n) { background: #fff7f1; transform: rotate(-1.1deg); }
+
+    .review-sticker::before {
+      background: var(--review-sun);
+      border: 2px solid var(--review-ink);
+      border-radius: 50%;
+      content: "";
+      height: 18px;
+      position: absolute;
+      right: 21px;
+      top: 21px;
+      width: 18px;
+    }
+
+    .review-sticker:nth-child(3n+2)::before { background: var(--review-sky); }
+    .review-sticker:nth-child(3n)::before { background: var(--review-pink); }
+
+    .review-quote {
+      font-family: "Playfair Display", Georgia, serif;
+      font-size: clamp(1.15rem, 1.5vw, 1.4rem);
+      font-style: italic;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.35;
+      margin: 24px 0 auto;
+      padding: 0;
+    }
+
+    .review-quote::before { content: "“"; }
+    .review-quote::after { content: "”"; }
+
+    .review-footer {
+      align-items: center;
+      border-top: 1px dashed rgba(28, 38, 66, 0.35);
+      display: flex;
+      gap: 12px;
+      margin-top: 30px;
+      padding-top: 17px;
+    }
+
+    .review-avatar {
+      border: 2px solid var(--review-ink);
+      border-radius: 50%;
+      flex: 0 0 45px;
+      height: 45px;
+      object-fit: cover;
+      width: 45px;
+    }
+
+    .reviewer-name {
+      display: block;
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 0.83rem;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    .review-meta {
+      color: rgba(28, 38, 66, 0.67);
+      display: block;
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 0.71rem;
+      font-weight: 600;
+      margin-top: 3px;
+    }
+
+    .review-stars {
+      color: #e99c00;
+      font-size: 0.92rem;
+      letter-spacing: 0.08em;
+      margin-left: auto;
+      white-space: nowrap;
+    }
+
+    .review-note {
+      color: rgba(28, 38, 66, 0.65);
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      margin: 30px 0 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (max-width: 820px) {
+      .reviews-heading { align-items: flex-start; flex-direction: column; gap: 20px; }
+      .review-sticker-grid { gap: 28px 22px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 520px) {
+      .review-sticker-grid { grid-template-columns: 1fr; max-width: 430px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="border-b">
+    <div class="container header-container">
+      <a href="index.html" class="logo">TRIBES OF NOMAD</a>
+      <nav aria-label="Primary navigation">
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="#stays">Stay</a></li>
+          <li><a href="last-stop.html">The Last Stop</a></li>
+          <li><a href="uyir-together.html">Uyir Together</a></li>
+          <li><a href="go-nomads.html">Go Nomads</a></li>
+          <li><a href="experiences.html">Experiences</a></li>
+          <li><a href="yourpath.html">Your path</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <a href="index.html#contact" class="btn btn-sun" style="min-height: 40px; padding: 0 20px;">Join the Tribe</a>
+        <button id="menuToggle" class="hamburger" aria-label="Toggle Navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="page-hero-grid">
+        <div class="page-hero-copy">
+          <span class="eyebrow eyebrow-sun">Pondicherry · Auroville · Beyond the checklist</span>
+          <h1 class="display-title display-title-white" style="margin-top: 8px;">Experiences</h1>
+          <p style="color: var(--sun); font-weight: 700;">Don’t Just Visit. Do Something You’ll Remember.</p>
+          <p>Some places are remembered because of what you saw. Others are remembered because of what happened while you were there.</p>
+          <div class="hero-handwriting">Show up. Try something. Remember it.</div>
+        </div>
+        <img class="hero-image" src="Lstp%20Assets/Sun%20rise.jpeg" alt="A sunrise experience near Pondicherry" />
+      </div>
+    </section>
+
+    <section class="content-section border-b">
+      <div class="container story-grid">
+        <div class="intro-copy">
+          <span class="eyebrow eyebrow-terracotta">For stories worth taking home</span>
+          <h2 class="display-title" style="margin: 8px 0 24px;">Make the place part of your story.</h2>
+          <p>Our experiences are designed to help travellers meet people, try something new and experience Pondicherry and Auroville beyond the usual checklist.</p>
+          <p>Depending on the week or gathering, there is always an invitation to join in, learn something, slow down or simply meet someone new.</p>
+        </div>
+        <aside class="story-aside">"You don’t need an itinerary packed with highlights. You only need one good thing to say yes to."</aside>
+      </div>
+      <div class="container photo-strip">
+        <img src="Lstp%20Assets/IMG_4525.jpeg" alt="Shared travel experience" />
+        <img src="Lstp%20Assets/IMG_3878.jpeg" alt="Community activity" />
+        <img src="Asset2/DSC_3094.jpeg" alt="Travellers on an experience" />
+      </div>
+    </section>
+
+    <section class="review-stickers" aria-labelledby="reviews-title">
+      <div class="container">
+        <div class="reviews-heading">
+          <div>
+            <span class="eyebrow eyebrow-terracotta">Guests notes from Google review</span>
+            <h2 id="reviews-title" class="display-title">Check Oru Vibe❤️</h2>
+          </div>
+          <a class="reviews-source" href="https://www.google.com/maps/place/The+Last+Stop+Backpackers+Hostel/@11.9911635,79.8182216,16z" target="_blank" rel="noopener noreferrer">
+            <span class="google-mark" aria-hidden="true">G</span>
+            4.9 on Google · 191 reviews
+          </a>
+        </div>
+
+        <div class="review-sticker-grid">
+          
+          <article class="review-sticker">
+            <blockquote class="review-quote">Amazing cozy and warm place to stay. I felt home right when I reached. Great spot to vibe and chill out with friends.</blockquote>
+            <div class="review-footer">
+              <img class="review-avatar" src="https://lh3.googleusercontent.com/a/ACg8ocKIBPSqqfCzfYzdk06ZwBr21BRI0d8BQLut-Stt_DiglOAh5Q=w54-h54-p-rp-mo-br100" alt="Shermin Oviya's photo" referrerpolicy="no-referrer" />
+              <div>
+                <span class="reviewer-name">Shermin Oviya</span>
+                <span class="review-meta">Google review</span>
+              </div>
+              <span class="review-stars" aria-label="5 out of 5 stars">★★★★★</span>
+            </div>
+          </article>
+
+          <article class="review-sticker">
+            <blockquote class="review-quote">Had a reallly great time and really good fun at the place very inviting and homely and a really great and wonderful host.</blockquote>
+            <div class="review-footer">
+              <img class="review-avatar" src="https://lh3.googleusercontent.com/a/ACg8ocKv3wcaukZjpuD8amchXikGryKYZaDNZbPSK7oeglNjS4i-lQ=w54-h54-p-rp-mo-ba12-br100" alt="kaushik1632's photo" referrerpolicy="no-referrer" />
+              <div>
+                <span class="reviewer-name">kaushik1632</span>
+                <span class="review-meta">Google review</span>
+              </div>
+              <span class="review-stars" aria-label="5 out of 5 stars">★★★★★</span>
+            </div>
+          </article>
+
+          <article class="review-sticker">
+            <blockquote class="review-quote">Beautiful stay and amazing hosts. Felt right at home with the bunch of people I met in such a short span of time.</blockquote>
+            <div class="review-footer">
+              <img class="review-avatar" src="https://lh3.googleusercontent.com/a-/ALV-UjWfC1iCmG-6b5cFsjQslshK5BMS0nIb_oKvRZ5X3iTtAZW35eE=w54-h54-p-rp-mo-ba12-br100" alt="sabah mazood's photo" referrerpolicy="no-referrer" />
+              <div>
+                <span class="reviewer-name">sabah mazood</span>
+                <span class="review-meta">Google review</span>
+              </div>
+              <span class="review-stars" aria-label="5 out of 5 stars">★★★★★</span>
+            </div>
+          </article>
+
+          <article class="review-sticker">
+            <blockquote class="review-quote">Very good hostel experience, host micky and praveen Anna was so nice and co-operative, 10/10 experience 😀 😄</blockquote>
+            <div class="review-footer">
+              <img class="review-avatar" src="https://lh3.googleusercontent.com/a-/ALV-UjUNC14hoUEfhFF7zjgfds8aDZEgqRKf6tq6LykCjV_o-hNFNec=w54-h54-p-rp-mo-ba12-br100" alt="Jacob George's photo" referrerpolicy="no-referrer" />
+              <div>
+                <span class="reviewer-name">Jacob George</span>
+                <span class="review-meta">Google review</span>
+              </div>
+              <span class="review-stars" aria-label="5 out of 5 stars">★★★★★</span>
+            </div>
+          </article>
+
+          <article class="review-sticker">
+            <blockquote class="review-quote">Great hostel experience, nice stay - very clean. Terrace must be checked out for sure!!!</blockquote>
+            <div class="review-footer">
+              <img class="review-avatar" src="https://lh3.googleusercontent.com/a-/ALV-UjVuHaw9DPexUV-H4Nm2_eoNVcNrvf0mI2WfuqcEhwsIFIEQp0aJ=w54-h54-p-rp-mo-br100" alt="sareka pillai's photo" referrerpolicy="no-referrer" />
+              <div>
+                <span class="reviewer-name">sareka pillai</span>
+                <span class="review-meta">Google review</span>
+              </div>
+              <span class="review-stars" aria-label="5 out of 5 stars">★★★★★</span>
+            </div>
+          </article>
+
+          <article class="review-sticker">
+            <blockquote class="review-quote">There are lot of restaurants nearby so you can grab anything you want</blockquote>
+            <div class="review-footer">
+              <img class="review-avatar" src="https://lh3.googleusercontent.com/a/ACg8ocISyquTlY-b9S5lijIOHIVF5SLnRlImbDB53wLzhYdvponVWg=w54-h54-p-rp-mo-br100" alt="Latika Kumare's photo" referrerpolicy="no-referrer" />
+              <div>
+                <span class="reviewer-name">Latika Kumare</span>
+                <span class="review-meta">Google review</span>
+              </div>
+              <span class="review-stars" aria-label="5 out of 5 stars">★★★★★</span>
+            </div>
+          </article>
+
+          <article class="review-sticker">
+            <blockquote class="review-quote">One of the most welcoming hostels here in Auroville! If you are looking for a place to chill and relax but have fun at the same time.. this is the place!</blockquote>
+            <div class="review-footer">
+              <img class="review-avatar" src="https://lh3.googleusercontent.com/a-/ALV-UjUj7Vyw2F9TfRq5lWNqylInOws6kzOmlmGb206X-2E_9SfJy9a9=w54-h54-p-rp-mo-br100" alt="Gowri Manjusha's photo" referrerpolicy="no-referrer" />
+              <div>
+                <span class="reviewer-name">Gowri Manjusha</span>
+                <span class="review-meta">Google review</span>
+              </div>
+              <span class="review-stars" aria-label="5 out of 5 stars">★★★★★</span>
+            </div>
+          </article>
+          
+          <article class="review-sticker">
+            <blockquote class="review-quote">A great Soulful, Uyir connecting property with Activities like we are out of India coz of entire French Culture & Foriegn diets. A great time Thanks a lot 😊👌🏻</blockquote>
+            <div class="review-footer">
+              <img class="review-avatar" src="https://lh3.googleusercontent.com/a-/ALV-UjWeAWYYgvBGNIlufRUMFDi1HP0ejgOVIG8JeDpDJtA3jGWerbp5=w54-h54-p-rp-mo-ba12-br100" alt="Dr VENGATESH's photo" referrerpolicy="no-referrer" />
+              <div>
+                <span class="reviewer-name">Dr VENGATESH</span>
+                <span class="review-meta">Google review</span>
+              </div>
+              <span class="review-stars" aria-label="5 out of 5 stars">★★★★★</span>
+            </div>
+          </article>
+
+          <article class="review-sticker">
+            <blockquote class="review-quote">He is our darling ! ❤️ Happy to stay in this hostel , owner is very loving person . Best hostel in Pondicherry in the middle of Auroville.</blockquote>
+            <div class="review-footer">
+              <img class="review-avatar" src="https://lh3.googleusercontent.com/a-/ALV-UjUJgOUbxRRufZCSDkKQZvKHhCA4IyxTgTfNPD60SHhIoa4caViy=w54-h54-p-rp-mo-br100" alt="yoo loo's photo" referrerpolicy="no-referrer" />
+              <div>
+                <span class="reviewer-name">yoo loo</span>
+                <span class="review-meta">Google review</span>
+              </div>
+              <span class="review-stars" aria-label="5 out of 5 stars">★★★★★</span>
+            </div>
+          </article>
+
+          <article class="review-sticker">
+            <blockquote class="review-quote">Enjoyed a peaceful stay with beautiful natural surroundings, good ambience, and a simple, homely vibe that made us feel comfortable</blockquote>
+            <div class="review-footer">
+              <img class="review-avatar" src="https://lh3.googleusercontent.com/a-/ALV-UjX7x_L-mynt99buQhDMPHCCkHIhA2-Zw70A7TTJyDTk03c7Sc0=w54-h54-p-rp-mo-br100" alt="Priya Dharshini's photo" referrerpolicy="no-referrer" />
+              <div>
+                <span class="reviewer-name">Priya Dharshini</span>
+                <span class="review-meta">Google review</span>
+              </div>
+              <span class="review-stars" aria-label="5 out of 5 stars">★★★★★</span>
+            </div>
+          </article>
+
+          <article class="review-sticker">
+            <blockquote class="review-quote">Loved the stay, hosting and the ambiance… the hostel vibe is something different..</blockquote>
+            <div class="review-footer">
+              <img class="review-avatar" src="https://lh3.googleusercontent.com/a-/ALV-UjU8hspz7XEIcYOLg992XXUxt7WydG1VIRr6IzaxwcbYXWprR8Z5=w54-h54-p-rp-mo-ba12-br100" alt="George Panicker's photo" referrerpolicy="no-referrer" />
+              <div>
+                <span class="reviewer-name">George Panicker</span>
+                <span class="review-meta">Google review</span>
+              </div>
+              <span class="review-stars" aria-label="5 out of 5 stars">★★★★★</span>
+            </div>
+          </article>
+
+          <article class="review-sticker">
+            <blockquote class="review-quote">Such a wonderful place to stay in Auroville 🔥</blockquote>
+            <div class="review-footer">
+              <img class="review-avatar" src="https://lh3.googleusercontent.com/a-/ALV-UjVGInZzDXfd7B_ILm_h-A1PUUQ3ncGI2Yl_-1ZCH8POYVewQDp_Pg=w54-h54-p-rp-mo-ba12-br100" alt="Stephen Mady's photo" referrerpolicy="no-referrer" />
+              <div>
+                <span class="reviewer-name">Stephen Mady</span>
+                <span class="review-meta">Google review</span>
+              </div>
+              <span class="review-stars" aria-label="5 out of 5 stars">★★★★★</span>
+            </div>
+          </article>
+
+        </div>
+
+        <p class="review-note">Short excerpts and profile photos are shown from the linked public Google reviews for The Last Stop Backpackers Hostel.</p>
+      </div>
+    </section>
+
+    <section class="callout">
+      <span class="eyebrow" style="color: var(--sun);">No expertise required</span>
+      <h2 class="display-title">You don’t have to be good at anything.</h2>
+      <p>Just show up.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="index.html" class="footer-logo">TRIBES OF NOMAD</a>
+      <p>A doorway into the tribe. • Pondicherry & Auroville</p>
+    </div>
+  </footer>
+
+  <script>
+    // Dropdown Menu Toggle Logic
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuToggle = document.getElementById('menuToggle');
+      const navMenu = document.getElementById('navMenu');
+
+      if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', function() {
+          navMenu.classList.toggle('show');
+        });
+
+        // Close the menu when a link is clicked
+        const navLinks = navMenu.querySelectorAll('a');
+        navLinks.forEach(link => {
+          link.addEventListener('click', () => {
+            navMenu.classList.remove('show');
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Path | Tribes of Nomad</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Reenie+Beanie&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    :root {
+      --forest: #18382B;
+      --forest-dark: #122B21;
+      --cream: #F5EFE3;
+      --terracotta: #C95D32;
+      --sun: #E8A62A;
+      --charcoal: #22221F;
+      --white: #FFFFFF;
+      --font-heading: 'Playfair Display', serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-hand: 'Reenie Beanie', cursive;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--cream); color: var(--charcoal); font-family: var(--font-body); line-height: 1.6; }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; object-fit: cover; }
+    
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 24px; }
+    .border-b { border-bottom: 1px solid rgba(24, 56, 43, 0.15); }
+    .eyebrow { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; }
+    .eyebrow-terracotta { color: var(--terracotta); }
+    .eyebrow-sun { color: var(--sun); }
+    
+    .display-title { font-family: var(--font-heading); font-size: clamp(2.2rem, 4vw, 3.5rem); line-height: 1.15; font-weight: 700; color: var(--forest); }
+
+    /* ==========================================================================
+       RESPONSIVE HEADER & DROPDOWN MENU
+       ========================================================================== */
+    header { position: sticky; top: 0; z-index: 1000; background-color: rgba(245, 239, 227, 0.95); backdrop-filter: blur(8px); }
+    
+    .header-container { 
+      display: flex !important; 
+      flex-direction: row !important; 
+      align-items: center !important; 
+      justify-content: space-between !important; 
+      position: relative; 
+      width: 100%; 
+      padding: 16px 0 !important; 
+      flex-wrap: nowrap !important;
+    }
+    
+    .header-actions { 
+      display: flex !important; 
+      flex-direction: row !important; 
+      align-items: center !important; 
+      gap: 12px !important; 
+    }
+
+    .logo { 
+      font-family: var(--font-heading); 
+      font-size: 1.25rem; 
+      font-weight: 800; 
+      letter-spacing: 0.1em; 
+      color: var(--forest); 
+      margin: 0 !important;
+      white-space: nowrap !important;
+    }
+
+    .hamburger { 
+      display: none; 
+      background: transparent; 
+      border: none; 
+      cursor: pointer; 
+      flex-direction: column; 
+      gap: 5px; 
+      padding: 4px; 
+      z-index: 101; 
+    }
+    
+    .hamburger span { 
+      display: block; 
+      width: 24px; 
+      height: 2px; 
+      background-color: var(--forest, #18382B); 
+      transition: 0.3s ease; 
+      border-radius: 2px; 
+    }
+
+    .nav-menu { 
+      display: flex; 
+      gap: 24px; 
+      list-style: none; 
+      margin: 0; 
+      padding: 0; 
+      align-items: center; 
+    }
+    .nav-menu a { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--forest); transition: color 0.2s; }
+    .nav-menu a:hover { color: var(--terracotta); }
+
+    @media (max-width: 991px) {
+      .hamburger { display: flex !important; }
+      
+      .nav-menu { 
+        display: none !important;
+        flex-direction: column; 
+        width: 200px; 
+        position: absolute;
+        top: 100%;
+        right: 0; 
+        left: auto;
+        background-color: rgba(245, 239, 227, 0.98); 
+        backdrop-filter: blur(8px);
+        padding: 16px 24px; 
+        border: 1px solid rgba(24, 56, 43, 0.15); 
+        border-radius: 4px; 
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        gap: 16px; 
+        align-items: flex-end; 
+        text-align: right;
+        z-index: 100;
+      }
+      
+      .nav-menu.show {
+        display: flex !important;
+      }
+      
+      .nav-menu a { font-size: 0.85rem; width: 100%; display: block; }
+    }
+
+    @media (max-width: 480px) {
+      .logo { font-size: 1.1rem !important; }
+      .header-actions .btn-sun { font-size: 0.65rem !important; padding: 0 12px !important; min-height: 36px !important; }
+    }
+
+    /* ==========================================================================
+       BUTTONS
+       ========================================================================== */
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 28px; font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.16em; cursor: pointer; border: none; transition: transform 0.2s, background-color 0.2s; }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-sun { background-color: var(--sun); color: var(--charcoal); }
+    .btn-terracotta { background-color: var(--terracotta); color: var(--white); }
+
+    /* ==========================================================================
+       SECTION & MAP STYLES
+       ========================================================================== */
+    .path-section {
+      padding: 60px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .path-header-card {
+      background: var(--white);
+      border: 1px solid rgba(24, 56, 43, 0.15);
+      padding: 40px 32px;
+      max-width: 700px;
+      width: 100%;
+      text-align: center;
+      margin-bottom: 32px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    }
+
+    .status-msg { margin-top: 16px; font-size: 0.85rem; font-weight: 600; color: var(--terracotta); }
+
+    .destination-picker {
+      display: none;
+      margin: 20px auto 0;
+      max-width: 500px;
+      padding: 18px;
+      border: 1px solid rgba(24, 56, 43, 0.15);
+      background: rgba(245, 239, 227, 0.65);
+      text-align: left;
+    }
+
+    .destination-picker.is-visible { display: block; }
+    .destination-label {
+      display: block; margin-bottom: 10px; color: var(--forest);
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+    }
+
+    .destination-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+
+    .destination-option {
+      min-height: 50px; padding: 10px 14px; border: 1px solid rgba(24, 56, 43, 0.35); background: var(--white);
+      color: var(--forest); font: inherit; font-size: 0.78rem; font-weight: 700; line-height: 1.25;
+      cursor: pointer; transition: background-color 0.2s, color 0.2s, transform 0.2s;
+    }
+
+    .destination-option:hover,
+    .destination-option:focus-visible,
+    .destination-option.is-selected {
+      background: var(--forest); color: var(--white); outline: none; transform: translateY(-1px);
+    }
+
+    .route-summary {
+      display: none; margin: 20px auto 0; max-width: 500px; padding: 16px 18px;
+      background: var(--forest); color: var(--white); text-align: left;
+    }
+
+    .route-summary.is-visible { display: block; }
+    .route-summary h2 { font-family: var(--font-heading); font-size: 1.15rem; line-height: 1.25; }
+    .route-summary p { margin-top: 4px; font-size: 0.8rem; font-weight: 600; }
+
+    .map-container {
+      width: 100%; max-width: 1000px; height: 550px; background: var(--white);
+      border: 1px solid rgba(24, 56, 43, 0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      overflow: hidden; position: relative;
+    }
+
+    #routeMap { width: 100%; height: 100%; z-index: 1; }
+    .leaflet-control-attribution { font-size: 0.65rem; }
+
+    .directions-panel {
+      display: none; width: 100%; max-width: 1000px; margin-top: 20px; padding: 28px 32px;
+      border: 1px solid rgba(24, 56, 43, 0.2); background: var(--white);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .directions-panel.is-visible { display: block; }
+    .directions-panel h2 { color: var(--forest); font-family: var(--font-heading); font-size: 1.5rem; }
+
+    .directions-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 28px; margin-top: 18px; padding: 0; list-style: none; counter-reset: directions; }
+    .directions-list li { position: relative; min-height: 42px; padding-left: 38px; color: rgba(34, 34, 31, 0.82); font-size: 0.83rem; }
+    .directions-list li::before {
+      position: absolute; top: 1px; left: 0; display: grid; width: 24px; height: 24px; place-items: center;
+      border-radius: 50%; background: var(--terracotta); color: var(--white);
+      content: counter(directions); counter-increment: directions; font-size: 0.7rem; font-weight: 700;
+    }
+    .directions-list small { display: block; margin-top: 2px; color: rgba(34, 34, 31, 0.58); }
+
+    @media (max-width: 480px) {
+      .destination-options, .directions-list { grid-template-columns: 1fr; }
+      .directions-panel { padding: 24px 20px; }
+    }
+
+    .handwritten-note { font-family: var(--font-hand); font-size: 2.2rem; color: var(--forest); margin-top: 24px; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <header class="border-b">
+    <div class="container header-container">
+      <a href="index.html" class="logo">TRIBES OF NOMAD</a>
+      <nav aria-label="Primary navigation">
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="#stays">Stay</a></li>
+          <li><a href="last-stop.html">The Last Stop</a></li>
+          <li><a href="uyir-together.html">Uyir Together</a></li>
+          <li><a href="go-nomads.html">Go Nomads</a></li>
+          <li><a href="experiences.html">Experiences</a></li>
+          <li><a href="yourpath.html">Your path</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <a href="index.html#contact" class="btn btn-sun" style="min-height: 40px; padding: 0 20px;">Join the Tribe</a>
+        <button id="menuToggle" class="hamburger" aria-label="Toggle Navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <section class="path-section">
+    <div class="path-header-card">
+      <span class="eyebrow eyebrow-terracotta">Navigation</span>
+      <h1 class="display-title" style="margin-top: 12px; font-size: 2.4rem;">Find your way to the tribe.</h1>
+      
+      <p id="pathIntro" style="margin-top: 12px; color: rgba(34, 34, 31, 0.85);">
+        Choose a stay to see the exact route from your current location.
+      </p>
+
+      <div style="margin-top: 24px;">
+        <button id="showPathBtn" class="btn btn-terracotta" type="button" aria-expanded="false" aria-controls="destinationPicker">
+          <svg style="margin-right: 8px;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+          Show My Path
+        </button>
+      </div>
+
+      <div id="destinationPicker" class="destination-picker" aria-hidden="true">
+        <span class="destination-label">Where are you going?</span>
+        <div class="destination-options">
+          <button class="destination-option" type="button" data-destination="last-stop">The Last Stop</button>
+          <button class="destination-option" type="button" data-destination="uyir-together">Uyir Together</button>
+        </div>
+      </div>
+
+      <p id="statusMessage" class="status-msg"></p>
+      <div id="routeSummary" class="route-summary" aria-live="polite">
+        <h2 id="routeTitle"></h2>
+        <p id="routeDetails"></p>
+      </div>
+    </div>
+
+    <div class="map-container">
+      <div id="routeMap" role="application" aria-label="Map and route directions"></div>
+    </div>
+
+    <section id="directionsPanel" class="directions-panel" aria-live="polite">
+      <h2>Route directions</h2>
+      <ol id="directionsList" class="directions-list"></ol>
+    </section>
+
+    <p class="handwritten-note">See you under the stars!</p>
+  </section>
+
+  <footer style="background: var(--forest-dark); padding: 48px 24px; text-align: center; color: rgba(255,255,255,0.7); font-size: 0.8rem;">
+    <div style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; align-items: center;">
+      <span style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 800; color: var(--white); letter-spacing: 0.1em;">TRIBES OF NOMAD</span>
+      <p>A doorway into the tribe. • Pondicherry & Auroville</p>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Hamburger Menu
+      const menuToggle = document.getElementById('menuToggle');
+      const navMenu = document.getElementById('navMenu');
+      if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', () => navMenu.classList.toggle('show'));
+        navMenu.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', () => navMenu.classList.remove('show'));
+        });
+      }
+
+      // DOM Elements
+      const pathBtn = document.getElementById('showPathBtn');
+      const statusMsg = document.getElementById('statusMessage');
+      const destinationPicker = document.getElementById('destinationPicker');
+      const destinationButtons = document.querySelectorAll('.destination-option');
+      const routeSummary = document.getElementById('routeSummary');
+      const routeTitle = document.getElementById('routeTitle');
+      const routeDetails = document.getElementById('routeDetails');
+      const directionsPanel = document.getElementById('directionsPanel');
+      const directionsList = document.getElementById('directionsList');
+
+      const destinations = {
+        'last-stop': {
+          name: 'The Last Stop Backpackers Hostel',
+          lat: 11.991263,
+          lng: 79.820888
+        },
+        'uyir-together': {
+          name: 'Uyir Together Cafe & Travellers Hostel',
+          lat: 12.0039,
+          lng: 79.7978
+        }
+      };
+
+      // State: NO fixed default location
+      let currentLocation = null;
+      let selectedDestination = null;
+      let userMarker = null;
+      let destinationMarker = null;
+      let routeLine = null;
+
+      // SVG Marker Generator
+      function createPinIcon(color, text) {
+        return L.divIcon({
+          className: 'custom-pin',
+          html: `<div style="display:flex; flex-direction:column; align-items:center; transform:translate(-50%, -100%); cursor:pointer;">
+                  <svg width="32" height="40" viewBox="0 0 24 32" fill="none">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 9.2 12 20 12 20s12-10.8 12-20c0-6.63-5.37-12-12-12z" fill="${color}"/>
+                    <circle cx="12" cy="11" r="4.5" fill="#FFFFFF"/>
+                  </svg>
+                  ${text ? `<span style="background:rgba(24,56,43,0.92); color:#FFFFFF; font-size:11px; font-weight:700; padding:3px 8px; border-radius:4px; white-space:nowrap; margin-top:-3px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">${text}</span>` : ''}
+                 </div>`,
+          iconSize: [0, 0]
+        });
+      }
+
+      // Initialize Leaflet
+      const map = L.map('routeMap', { scrollWheelZoom: false }).setView([11.998, 79.810], 13);
+
+      // Clean Esri World Street Map Tiles (100% free, no API keys, zero watermarks)
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 19,
+        attribution: 'Tiles &copy; Esri'
+      }).addTo(map);
+
+      setTimeout(() => map.invalidateSize(), 300);
+
+      // Plot both stays
+      Object.keys(destinations).forEach(key => {
+        const dest = destinations[key];
+        const stayMarker = L.marker([dest.lat, dest.lng], {
+          icon: createPinIcon('#C95D32', dest.name.split(' ')[0])
+        }).addTo(map);
+
+        stayMarker.bindTooltip(dest.name, { direction: 'top' });
+        stayMarker.on('click', () => {
+          const btn = document.querySelector(`[data-destination="${key}"]`);
+          if (btn) btn.click();
+        });
+      });
+
+      // Update User Marker
+      function setUserPosition(lat, lng, label) {
+        currentLocation = { lat, lng };
+        if (userMarker) map.removeLayer(userMarker);
+
+        userMarker = L.marker([lat, lng], {
+          icon: createPinIcon('#2D7DD2', label || 'Your Location')
+        }).addTo(map).bindTooltip(label || 'Your Location', { direction: 'top' });
+      }
+
+      // Detect Live Current Location
+      async function detectLiveLocation() {
+        statusMsg.style.color = 'var(--forest)';
+        statusMsg.innerText = 'Detecting your live location...';
+
+        // 1. Try Browser Geolocation API
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            function(pos) {
+              setUserPosition(pos.coords.latitude, pos.coords.longitude, 'Your Location');
+              map.setView([pos.coords.latitude, pos.coords.longitude], 13);
+              onLocationResolved();
+            },
+            function(err) {
+              console.warn('Browser GPS unavailable, trying IP-based live geolocation...', err.message);
+              fallbackToIPLocation();
+            },
+            { enableHighAccuracy: true, timeout: 6000 }
+          );
+        } else {
+          fallbackToIPLocation();
+        }
+      }
+
+      // Fallback for file:// or when GPS is blocked in browser
+      async function fallbackToIPLocation() {
+        try {
+          const res = await fetch('https://get.geojs.io/v1/ip/geo.json');
+          if (!res.ok) throw new Error('IP service error');
+          const data = await res.json();
+          const lat = parseFloat(data.latitude);
+          const lng = parseFloat(data.longitude);
+          const city = data.city || 'Your Area';
+
+          setUserPosition(lat, lng, `You (~${city})`);
+          map.setView([lat, lng], 13);
+          onLocationResolved();
+        } catch (e) {
+          statusMsg.style.color = 'var(--terracotta)';
+          statusMsg.innerText = 'Click anywhere on the map to set your starting location.';
+        }
+      }
+
+      function onLocationResolved() {
+        if (selectedDestination) {
+          statusMsg.style.color = 'var(--forest)';
+          statusMsg.innerText = `Location identified. Drawing route to ${selectedDestination.name}...`;
+          drawRoute();
+        } else {
+          statusMsg.style.color = 'var(--forest)';
+          statusMsg.innerText = 'Location found! Pick your stay to view the route.';
+        }
+      }
+
+      // Start detecting immediately on page load
+      detectLiveLocation();
+
+      // Click to manually adjust start point
+      map.on('click', function(e) {
+        setUserPosition(e.latlng.lat, e.latlng.lng, 'Selected Start');
+        if (selectedDestination) {
+          statusMsg.innerText = `Starting point adjusted. Recalculating route to ${selectedDestination.name}...`;
+          drawRoute();
+        } else {
+          statusMsg.innerText = 'Starting point set. Choose your destination above.';
+        }
+      });
+
+      // Controls
+      pathBtn.addEventListener('click', function () {
+        const isVisible = destinationPicker.classList.toggle('is-visible');
+        destinationPicker.setAttribute('aria-hidden', String(!isVisible));
+        pathBtn.setAttribute('aria-expanded', String(isVisible));
+      });
+
+      destinationButtons.forEach(button => {
+        button.addEventListener('click', function () {
+          selectDestination(destinations[button.dataset.destination], button);
+        });
+      });
+
+      function selectDestination(destination, selectedButton) {
+        selectedDestination = destination;
+        destinationButtons.forEach(btn => btn.classList.toggle('is-selected', btn === selectedButton));
+        destinationPicker.classList.add('is-visible');
+        pathBtn.setAttribute('aria-expanded', 'true');
+
+        if (!currentLocation) {
+          statusMsg.style.color = 'var(--forest)';
+          statusMsg.innerText = `Locating you to draw the path to ${destination.name}...`;
+          return;
+        }
+
+        drawRoute();
+      }
+
+      // Draw Route
+      async function drawRoute() {
+        const destination = selectedDestination;
+        if (!destination || !currentLocation) return;
+
+        statusMsg.style.color = 'var(--forest)';
+        statusMsg.innerText = `Calculating route to ${destination.name}...`;
+
+        if (destinationMarker) map.removeLayer(destinationMarker);
+        if (routeLine) map.removeLayer(routeLine);
+
+        destinationMarker = L.marker([destination.lat, destination.lng], {
+          icon: createPinIcon('#C95D32', destination.name)
+        }).addTo(map);
+
+        const gmapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${currentLocation.lat},${currentLocation.lng}&destination=${destination.lat},${destination.lng}`;
+        let routeDrawn = false;
+
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 4500);
+
+          const routeUrl = `https://router.project-osrm.org/route/v1/driving/${currentLocation.lng},${currentLocation.lat};${destination.lng},${destination.lat}?overview=full&geometries=geojson&steps=true`;
+          const response = await fetch(routeUrl, { signal: controller.signal });
+          clearTimeout(timeoutId);
+
+          if (response.ok) {
+            const data = await response.json();
+            const route = data.routes && data.routes[0];
+
+            if (route && route.geometry) {
+              routeLine = L.geoJSON(route.geometry, {
+                style: { color: '#C95D32', weight: 5, opacity: 0.9 }
+              }).addTo(map);
+
+              map.fitBounds(routeLine.getBounds(), { padding: [50, 50] });
+
+              routeTitle.textContent = `To ${destination.name}`;
+              routeDetails.innerHTML = `${formatDistance(route.distance)} · approx ${formatDuration(route.duration)} &nbsp;|&nbsp; <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" style="color:var(--sun); font-weight:700; text-decoration:underline;">Open in Google Maps ↗</a>`;
+              routeSummary.classList.add('is-visible');
+
+              const steps = route.legs ? route.legs.flatMap(l => l.steps) : [];
+              if (steps.length > 0) renderSteps(steps, destination.name);
+
+              statusMsg.innerText = `Route ready to ${destination.name}.`;
+              routeDrawn = true;
+            }
+          }
+        } catch (e) {
+          console.warn('OSRM unreachable; using direct path fallback');
+        }
+
+        // Direct line + Google Maps handoff fallback
+        if (!routeDrawn) {
+          routeLine = L.polyline([[currentLocation.lat, currentLocation.lng], [destination.lat, destination.lng]], {
+            color: '#C95D32',
+            weight: 4,
+            dashArray: '8, 8',
+            opacity: 0.85
+          }).addTo(map);
+
+          map.fitBounds(routeLine.getBounds(), { padding: [60, 60] });
+
+          const distKm = getDistanceKm(currentLocation.lat, currentLocation.lng, destination.lat, destination.lng);
+          routeTitle.textContent = `To ${destination.name}`;
+          routeDetails.innerHTML = `~${distKm.toFixed(1)} km direct &nbsp;|&nbsp; <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" style="color:var(--sun); font-weight:700; text-decoration:underline;">Open Turn-by-Turn Navigation ↗</a>`;
+          routeSummary.classList.add('is-visible');
+
+          directionsList.innerHTML = `<li><span>Head toward ${destination.name}</span><small>Direct path displayed. Tap the navigation link above for live turn-by-turn directions in Google Maps.</small></li>`;
+          directionsPanel.classList.add('is-visible');
+          statusMsg.innerText = `Path charted to ${destination.name}.`;
+        }
+      }
+
+      function renderSteps(steps, destinationName) {
+        directionsList.innerHTML = '';
+        steps.forEach(function (step, index) {
+          const item = document.createElement('li');
+          const instruction = document.createElement('span');
+          const distance = document.createElement('small');
+          instruction.textContent = formatInstruction(step, destinationName, index === steps.length - 1);
+          distance.textContent = formatDistance(step.distance);
+          item.append(instruction, distance);
+          directionsList.appendChild(item);
+        });
+        directionsPanel.classList.add('is-visible');
+      }
+
+      function formatInstruction(step, destinationName, isFinalStep) {
+        const maneuver = step.maneuver || {};
+        const road = step.name ? ` onto ${step.name}` : '';
+        if (isFinalStep || maneuver.type === 'arrive') return `Arrive at ${destinationName}`;
+        if (maneuver.type === 'depart') return `Start${road}`;
+        if (maneuver.type === 'roundabout') return `At the roundabout, take exit ${maneuver.exit || ''}${road}`;
+        if (maneuver.type === 'turn') return `Turn ${maneuver.modifier || ''}${road}`.replace(/\s+/g, ' ').trim();
+        if (maneuver.type === 'continue' || maneuver.type === 'new name') return `Continue${road}`;
+        return `${(maneuver.type || 'Head')}${road}`;
+      }
+
+      function formatDistance(meters) {
+        return meters >= 1000 ? `${(meters / 1000).toFixed(1)} km` : `${Math.round(meters)} m`;
+      }
+
+      function formatDuration(seconds) {
+        const minutes = Math.max(1, Math.round(seconds / 60));
+        return minutes >= 60 ? `${Math.floor(minutes / 60)} hr ${minutes % 60} min` : `${minutes} min`;
+      }
+
+      function getDistanceKm(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+      }
+    });
+  </script>
+</body>
+</html>
+

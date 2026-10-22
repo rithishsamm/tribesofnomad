@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Last Stop Backpackers Hostel | Tribes of Nomad</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Reenie+Beanie&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    /* ==========================================================================
+       RESPONSIVE HEADER & DROPDOWN MENU UPDATES
+       ========================================================================== */
+    
+    /* Force the header into a single row, overriding any external styles.css */
+    .header-container { 
+      display: flex !important; 
+      flex-direction: row !important; 
+      align-items: center !important; 
+      justify-content: space-between !important; 
+      position: relative; 
+      width: 100%; 
+      padding: 16px 0 !important; 
+      flex-wrap: nowrap !important;
+    }
+    
+    .header-actions { 
+      display: flex !important; 
+      flex-direction: row !important; 
+      align-items: center !important; 
+      gap: 12px !important; 
+    }
+
+    .logo {
+      margin: 0 !important;
+      white-space: nowrap !important;
+    }
+
+    .hamburger { 
+      display: none; 
+      background: transparent; 
+      border: none; 
+      cursor: pointer; 
+      flex-direction: column; 
+      gap: 5px; 
+      padding: 4px; 
+      z-index: 101; 
+    }
+    
+    .hamburger span { 
+      display: block; 
+      width: 24px; 
+      height: 2px; 
+      background-color: var(--forest, #18382B); 
+      transition: 0.3s ease; 
+      border-radius: 2px; 
+    }
+
+    /* Desktop Navigation */
+    .nav-menu { 
+      display: flex; 
+      gap: 24px; 
+      list-style: none; 
+      margin: 0; 
+      padding: 0; 
+      align-items: center; 
+    }
+
+    /* Mobile/Tablet Breakpoints */
+    @media (max-width: 991px) {
+      .hamburger { display: flex !important; }
+      
+      /* Mobile Dropdown Menu (Top-Right Box) */
+      .nav-menu { 
+        display: none !important; /* Hidden by default */
+        flex-direction: column; 
+        width: 200px; /* Fixed width box */
+        position: absolute;
+        top: 100%;
+        right: 0; /* Anchored to the right */
+        left: auto;
+        background-color: rgba(245, 239, 227, 0.98); 
+        backdrop-filter: blur(8px);
+        padding: 16px 24px; 
+        border: 1px solid rgba(24, 56, 43, 0.15); 
+        border-radius: 4px; 
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        gap: 16px; 
+        align-items: flex-end; /* Align links to the right */
+        text-align: right;
+        z-index: 100;
+      }
+      
+      .nav-menu.show {
+        display: flex !important;
+      }
+      
+      .nav-menu a { font-size: 0.85rem; width: 100%; display: block; }
+    }
+
+    @media (max-width: 480px) {
+      /* Shrink elements slightly on small phones so everything fits on one line */
+      .logo {
+        font-size: 1.1rem !important;
+      }
+      .header-actions .btn-sun {
+        font-size: 0.65rem !important;
+        padding: 0 12px !important;
+        min-height: 36px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="border-b">
+    <div class="container header-container">
+      <a href="index.html" class="logo">TRIBES OF NOMAD</a>
+      <nav aria-label="Primary navigation">
+        <ul class="nav-menu" id="navMenu">
+         <li><a href="index.html">Home</a></li>
+          <li><a href="#stays">Stay</a></li>
+          <li><a href="last-stop.html">The Last Stop</a></li>
+          <li><a href="uyir-together.html">Uyir Together</a></li>
+          <li><a href="go-nomads.html">Go Nomads</a></li>
+          <li><a href="experiences.html">Experiences</a></li>
+          <li><a href="yourpath.html">Your path</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <a href="index.html#contact" class="btn btn-sun" style="min-height: 40px; padding: 0 20px;">Join the Tribe</a>
+        <button id="menuToggle" class="hamburger" aria-label="Toggle Navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="page-hero-grid">
+        <div class="page-hero-copy">
+          <span class="eyebrow eyebrow-sun">Backpackers hostel · Pondicherry</span>
+          <h1 class="display-title display-title-white" style="margin-top: 8px;">The Last Stop Backpackers Hostel</h1>
+          <p style="color: var(--sun); font-weight: 700;">Social Stays With Rooftop Soul.</p>
+          <p>The Last Stop is a backpackers hostel built around connection.</p>
+          <div class="hero-handwriting">The road always has room for one more.</div>
+        </div>
+        <img class="hero-image" src="Lstp%20Assets/IMG_5209.jpeg" alt="Travellers gathering at The Last Stop" />
+      </div>
+    </section>
+
+    <section class="content-section border-b">
+      <div class="container story-grid">
+        <div class="intro-copy">
+          <span class="eyebrow eyebrow-terracotta">Made for connection</span>
+          <h2 class="display-title" style="margin: 8px 0 24px;">Come for the room. Stay for the people.</h2>
+          <p>Expect rooftop sunsets, music, conversations that stretch into the night, shared spaces and travellers arriving from everywhere.</p>
+          <p>Stay for a night.</p>
+          <p>Stay for a week.</p>
+          <p>Stay until the road changes your plans.</p>
+          <p>The Last Stop is a base for exploring Pondicherry while still having a community to come back to at the end of the day.</p>
+        </div>
+        <aside class="story-aside">"A place to leave your backpack, meet your next travel buddy and let the night run a little longer."</aside>
+      </div>
+      <div class="container photo-strip">
+        <img src="Lstp%20Assets/IMG_4253.jpeg" alt="A community moment at the hostel" />
+        <img src="Lstp%20Assets/IMG_4835.jpeg" alt="Music and conversations at The Last Stop" />
+        <img src="Lstp%20Assets/IMG_4719.jpeg" alt="Rooftop social time" />
+      </div>
+    </section>
+
+    <section class="expectations">
+      <div class="container">
+        <span class="eyebrow eyebrow-sun">What to expect</span>
+        <h2 class="display-title display-title-white">Find your place in the mix.</h2>
+        <div class="feature-grid">
+          <div class="feature-card"><span>01</span>Backpacker atmosphere</div>
+          <div class="feature-card"><span>02</span>Dorms and private stays</div>
+          <div class="feature-card"><span>03</span>Rooftop sunsets</div>
+          <div class="feature-card"><span>04</span>Music and community nights</div>
+          <div class="feature-card"><span>05</span>Social spaces</div>
+          <div class="feature-card"><span>06</span>Traveller meetups</div>
+          <div class="feature-card"><span>07</span>Easy access to Pondicherry and Auroville</div>
+          <div class="feature-card"><span>08</span>A community-first environment</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="callout">
+      <span class="eyebrow" style="color: var(--sun);">Your next base</span>
+      <h2 class="display-title">See you on the rooftop.</h2>
+      <p>Bring your plans, or arrive without any. There is always a conversation waiting to begin.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="index.html" class="footer-logo">TRIBES OF NOMAD</a>
+      <p>A doorway into the tribe. • Pondicherry &amp; Auroville</p>
+    </div>
+  </footer>
+
+  <script>
+    // Dropdown Menu Toggle Logic
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuToggle = document.getElementById('menuToggle');
+      const navMenu = document.getElementById('navMenu');
+
+      if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', function() {
+          navMenu.classList.toggle('show');
+        });
+
+        // Close the menu when a link is clicked
+        const navLinks = navMenu.querySelectorAll('a');
+        navLinks.forEach(link => {
+          link.addEventListener('click', () => {
+            navMenu.classList.remove('show');
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>

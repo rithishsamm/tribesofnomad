@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Gallery | Tribes of Nomad</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Reenie+Beanie&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================================
+       BASE VARIABLES & RESETS
+       ========================================================================== */
+    :root {
+      --forest: #18382B;
+      --forest-dark: #122B21;
+      --cream: #F5EFE3;
+      --terracotta: #C95D32;
+      --sun: #E8A62A;
+      --charcoal: #22221F;
+      --white: #FFFFFF;
+      --font-heading: 'Playfair Display', serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-hand: 'Reenie Beanie', cursive;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background-color: var(--cream); color: var(--charcoal); font-family: var(--font-body); line-height: 1.6; overflow-x: hidden; }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; object-fit: cover; }
+    
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 24px; }
+    .border-b { border-bottom: 1px solid rgba(24, 56, 43, 0.15); }
+    
+    /* Typography */
+    .eyebrow { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; }
+    .eyebrow-terracotta { color: var(--terracotta); }
+    .display-title { font-family: var(--font-heading); font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.18; font-weight: 700; color: var(--forest); }
+
+    /* ==========================================================================
+       RESPONSIVE HEADER & DROPDOWN MENU
+       ========================================================================== */
+    header { position: sticky; top: 0; z-index: 100; background-color: rgba(245, 239, 227, 0.98); backdrop-filter: blur(8px); }
+    
+    .header-container { 
+      display: flex !important; 
+      flex-direction: row !important; 
+      align-items: center !important; 
+      justify-content: space-between !important; 
+      position: relative; 
+      width: 100%; 
+      padding: 16px 24px !important; 
+      flex-wrap: nowrap !important;
+    }
+    
+    .header-actions { 
+      display: flex !important; 
+      flex-direction: row !important; 
+      align-items: center !important; 
+      gap: 12px !important; 
+    }
+
+    .logo { 
+      font-family: var(--font-heading); 
+      font-size: 1.25rem; 
+      font-weight: 800; 
+      letter-spacing: 0.1em; 
+      color: var(--forest); 
+      margin: 0 !important;
+      white-space: nowrap !important;
+    }
+
+    .hamburger { 
+      display: none; 
+      background: transparent; 
+      border: none; 
+      cursor: pointer; 
+      flex-direction: column; 
+      gap: 5px; 
+      padding: 4px; 
+      z-index: 101; 
+    }
+    
+    .hamburger span { 
+      display: block; 
+      width: 24px; 
+      height: 2px; 
+      background-color: var(--forest, #18382B); 
+      transition: 0.3s ease; 
+      border-radius: 2px; 
+    }
+
+    /* Desktop Navigation */
+    .nav-menu { 
+      display: flex; 
+      gap: 24px; 
+      list-style: none; 
+      margin: 0; 
+      padding: 0; 
+      align-items: center; 
+    }
+    .nav-menu a { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--forest); transition: color 0.2s; white-space: nowrap;}
+    .nav-menu a:hover { color: var(--terracotta); }
+
+    /* Mobile/Tablet Breakpoints */
+    @media (max-width: 991px) {
+      .hamburger { display: flex !important; }
+      
+      .nav-menu { 
+        display: none !important; 
+        flex-direction: column; 
+        width: 200px; 
+        position: absolute;
+        top: 100%;
+        right: 0; 
+        left: auto;
+        background-color: rgba(245, 239, 227, 0.98); 
+        backdrop-filter: blur(8px);
+        padding: 16px 24px; 
+        border: 1px solid rgba(24, 56, 43, 0.15); 
+        border-radius: 4px; 
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        gap: 16px; 
+        align-items: flex-end; 
+        text-align: right;
+        z-index: 100;
+      }
+      
+      .nav-menu.show { display: flex !important; }
+      .nav-menu a { font-size: 0.85rem; width: 100%; display: block; }
+    }
+
+    @media (max-width: 480px) {
+      .logo { font-size: 1.1rem !important; }
+      .header-actions .btn-sun { font-size: 0.65rem !important; padding: 0 12px !important; min-height: 36px !important; }
+    }
+
+    /* ==========================================================================
+       BUTTONS
+       ========================================================================== */
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 28px; font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.16em; cursor: pointer; border: none; transition: transform 0.2s, background-color 0.2s; text-align: center; }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-sun { background-color: var(--sun); color: var(--charcoal); }
+
+    /* ==========================================================================
+       GALLERY STYLES
+       ========================================================================== */
+    .page-hero { padding: 60px 24px 40px; text-align: center; }
+    
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      padding: 0 24px 80px;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    .gallery-item {
+      position: relative;
+      height: 350px;
+      overflow: hidden;
+      border: 1px solid rgba(24, 56, 43, 0.15);
+      background: var(--white);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.05);
+    }
+
+    .gallery-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(18, 43, 33, 0.85) 0%, rgba(18, 43, 33, 0) 100%);
+      padding: 30px 20px 20px;
+      color: var(--white);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .gallery-item:hover .gallery-overlay {
+      opacity: 1;
+    }
+
+    .image-title {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      margin-bottom: 4px;
+    }
+
+    .image-category {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--sun);
+    }
+
+    @media (max-width: 768px) {
+      .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 16px;
+      }
+      .gallery-item { height: 280px; }
+      
+      /* Make overlay always slightly visible on mobile since there is no hover */
+      .gallery-overlay { opacity: 1; background: linear-gradient(to top, rgba(18, 43, 33, 0.7) 0%, rgba(18, 43, 33, 0) 100%); padding: 20px 16px 16px; }
+      .image-title { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="border-b">
+    <div class="container header-container">
+      <a href="index.html" class="logo">TRIBES OF NOMAD</a>
+      
+      <nav aria-label="Primary navigation">
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#stays">Stay</a></li>
+          <li><a href="last-stop.html">The Last Stop</a></li>
+          <li><a href="uyir-together.html">Uyir Together</a></li>
+          <li><a href="go-nomads.html">Go Nomads</a></li>
+          <li><a href="experiences.html">Experiences</a></li>
+          <li><a href="yourpath.html">Your path</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <a href="contact.html" class="btn btn-sun" style="min-height: 40px; padding: 0 20px;">Join the Tribe</a>
+        <button id="menuToggle" class="hamburger" aria-label="Toggle Navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero border-b">
+      <div class="container">
+        <span class="eyebrow eyebrow-terracotta">Glimpses of the Tribe</span>
+        <h1 class="display-title" style="margin-top: 12px; margin-bottom: 16px;">Moments Captured.</h1>
+        <p style="color: rgba(34, 34, 31, 0.85); max-width: 600px; margin: 0 auto;">A collection of spaces, faces, and stories from the road. This is what it looks like to be part of the tribe.</p>
+      </div>
+    </section>
+
+    <section class="gallery-grid" style="margin-top: 48px;">
+      
+      <div class="gallery-item">
+        <img src="Asset2/DSC_0322-6.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay">
+          <span class="image-category">Go Nomads</span>
+          <h3 class="image-title">Gathering</h3>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_0333-12.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay">
+          <span class="image-category">The Last Stop</span>
+          <h3 class="image-title">Hostel Life</h3>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_2770.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay">
+          <span class="image-category">Uyir Together</span>
+          <h3 class="image-title">Morning Calm</h3>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_2772.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay">
+          <span class="image-category">Experiences</span>
+          <h3 class="image-title">Tribe Stories</h3>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_2773.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay">
+          <span class="image-category">Go Nomads</span>
+          <h3 class="image-title">Campfire Circle</h3>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_2894.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay">
+          <span class="image-category">The Last Stop</span>
+          <h3 class="image-title">Rooftop Sunsets</h3>
+        </div>
+      </div>
+
+      <div class="gallery-item">
+        <img src="Asset2/DSC_2921.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay">
+          <span class="image-category">Experiences</span>
+          <h3 class="image-title">Local Trails</h3>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_2926.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay">
+          <span class="image-category">Uyir Together</span>
+          <h3 class="image-title">Cafe Moments</h3>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_2930.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay">
+          <span class="image-category">Go Nomads</span>
+          <h3 class="image-title">Music Nights</h3>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_2933.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay">
+          <span class="image-category">Gathering</span>
+          <h3 class="image-title">Shared Travel</h3>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_2946.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay">
+          <span class="image-category">The Last Stop</span>
+          <h3 class="image-title">Backpackers</h3>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_2955.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay">
+          <span class="image-category">Uyir Together</span>
+          <h3 class="image-title">Slow Mornings</h3>
+        </div>
+      </div>
+
+      <div class="gallery-item">
+        <img src="Asset2/DSC_2975.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Experiences</span><h3 class="image-title">Tribe Stories</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_2990.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Go Nomads</span><h3 class="image-title">Campfire Circle</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3012.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Gathering</span><h3 class="image-title">Community</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3060.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">The Last Stop</span><h3 class="image-title">Hostel Life</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3062.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Experiences</span><h3 class="image-title">Exploration</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3063.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Uyir Together</span><h3 class="image-title">Green Spaces</h3></div>
+      </div>
+
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3064.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Gathering</span><h3 class="image-title">Tribe Meets</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3067.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Go Nomads</span><h3 class="image-title">Live Music</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3071.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">The Last Stop</span><h3 class="image-title">Social Nights</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3081.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Experiences</span><h3 class="image-title">Workshops</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3085.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Uyir Together</span><h3 class="image-title">Conversations</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3088.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Gathering</span><h3 class="image-title">Shared Meals</h3></div>
+      </div>
+
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3090.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Go Nomads</span><h3 class="image-title">Drum Circles</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3092.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Experiences</span><h3 class="image-title">Morning Trails</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3094.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">The Last Stop</span><h3 class="image-title">Backpackers</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3095.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Uyir Together</span><h3 class="image-title">Cafe Moments</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3096.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Gathering</span><h3 class="image-title">Tribe Stories</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3098.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Go Nomads</span><h3 class="image-title">Campfire Circle</h3></div>
+      </div>
+
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3099.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">The Last Stop</span><h3 class="image-title">Rooftop Life</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3104.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Experiences</span><h3 class="image-title">Exploration</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3107.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Uyir Together</span><h3 class="image-title">Quiet Corners</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3109.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Gathering</span><h3 class="image-title">Community</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3110.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Go Nomads</span><h3 class="image-title">Acoustic Nights</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3114.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">The Last Stop</span><h3 class="image-title">Hostel Stay</h3></div>
+      </div>
+
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3115.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Uyir Together</span><h3 class="image-title">Green Spaces</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3116.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Experiences</span><h3 class="image-title">Local Trails</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3119.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Go Nomads</span><h3 class="image-title">Gathering</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3122.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Gathering</span><h3 class="image-title">Shared Moments</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3125.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">The Last Stop</span><h3 class="image-title">Social Connect</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/DSC_3128.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Experiences</span><h3 class="image-title">Morning Vibes</h3></div>
+      </div>
+
+      <div class="gallery-item">
+        <img src="Asset2/IMG_1224.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Go Nomads</span><h3 class="image-title">Tribe Stories</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/IMG_2946.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">The Last Stop</span><h3 class="image-title">Hostel Life</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/IMG_3274.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Uyir Together</span><h3 class="image-title">Cafe Time</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/IMG_3578.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Gathering</span><h3 class="image-title">Connection</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/IMG_3777.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Experiences</span><h3 class="image-title">Local Vibes</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/IMG_3780.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Go Nomads</span><h3 class="image-title">Campfire Circle</h3></div>
+      </div>
+
+      <div class="gallery-item">
+        <img src="Asset2/IMG_3976.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">The Last Stop</span><h3 class="image-title">Rooftop Moments</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/IMG_4053.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Uyir Together</span><h3 class="image-title">Slow Travel</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/IMG_4290.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Gathering</span><h3 class="image-title">Tribe Meets</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/IMG_4777.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Experiences</span><h3 class="image-title">Community</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/IMG_5096.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Go Nomads</span><h3 class="image-title">Music & Art</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/IMG_9449.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">The Last Stop</span><h3 class="image-title">Social Stay</h3></div>
+      </div>
+
+      <div class="gallery-item">
+        <img src="Asset2/IMG_9515.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Uyir Together</span><h3 class="image-title">Morning Calm</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Asset2/IMG_9893.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Gathering</span><h3 class="image-title">Travel Buddies</h3></div>
+      </div>
+
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/Drums%20circle.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Go Nomads</span><h3 class="image-title">Drum Circles</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_0402.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Uyir Together</span><h3 class="image-title">Morning Calm</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_0403.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Experiences</span><h3 class="image-title">Local Trails</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_0404.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">The Last Stop</span><h3 class="image-title">Hostel Life</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_0405.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Gathering</span><h3 class="image-title">Shared Travel</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_0406.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Uyir Together</span><h3 class="image-title">Green Spaces</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_0407.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Experiences</span><h3 class="image-title">Tribe Stories</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_0408.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Go Nomads</span><h3 class="image-title">Campfire Circle</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_0409.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">The Last Stop</span><h3 class="image-title">Rooftop Sunsets</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_0410.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Gathering</span><h3 class="image-title">Community</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_0411.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Uyir Together</span><h3 class="image-title">Cafe Moments</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_0650.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Experiences</span><h3 class="image-title">Exploration</h3></div>
+      </div>
+      
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_0870.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Go Nomads</span><h3 class="image-title">Music Nights</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_0871.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">The Last Stop</span><h3 class="image-title">Backpackers</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_0948.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Gathering</span><h3 class="image-title">Tribe Meets</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_0954.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Uyir Together</span><h3 class="image-title">Slow Mornings</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_0958.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Experiences</span><h3 class="image-title">Workshops</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_0960.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Go Nomads</span><h3 class="image-title">Live Music</h3></div>
+      </div>
+      
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_3761.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">The Last Stop</span><h3 class="image-title">Social Nights</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_3793.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Gathering</span><h3 class="image-title">Shared Meals</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_3868.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Uyir Together</span><h3 class="image-title">Conversations</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_3869.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Experiences</span><h3 class="image-title">Morning Trails</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_3877.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Go Nomads</span><h3 class="image-title">Drum Circles</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_3878.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">The Last Stop</span><h3 class="image-title">Rooftop Life</h3></div>
+      </div>
+
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_3889.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Gathering</span><h3 class="image-title">Tribe Stories</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_3894.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Uyir Together</span><h3 class="image-title">Quiet Corners</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_3896.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Experiences</span><h3 class="image-title">Exploration</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_4024.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Go Nomads</span><h3 class="image-title">Acoustic Nights</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_4484.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Experiences</span><h3 class="image-title">Local Trails</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_4523.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Go Nomads</span><h3 class="image-title">Gathering</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_4528.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Gathering</span><h3 class="image-title">Shared Moments</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_4546.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Experiences</span><h3 class="image-title">Morning Vibes</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_4564.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Go Nomads</span><h3 class="image-title">Tribe Stories</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_4574.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">The Last Stop</span><h3 class="image-title">Hostel Life</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_4639.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Gathering</span><h3 class="image-title">Connection</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_4685.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Uyir Together</span><h3 class="image-title">Slow Travel</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_4829.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Go Nomads</span><h3 class="image-title">Campfire Circle</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_4835.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">The Last Stop</span><h3 class="image-title">Rooftop Moments</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_4933.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Uyir Together</span><h3 class="image-title">Morning Calm</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_4941.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Experiences</span><h3 class="image-title">Community</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_4961.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Go Nomads</span><h3 class="image-title">Music & Art</h3></div>
+      </div>
+
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_5021.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">The Last Stop</span><h3 class="image-title">Social Stay</h3></div>
+      </div>
+
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_5152.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Uyir Together</span><h3 class="image-title">Green Spaces</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_5184.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Experiences</span><h3 class="image-title">Local Trails</h3></div>
+      </div>
+      <div class="gallery-item">
+        <img src="Lstp%20Assets/IMG_5191.jpeg" alt="Gallery Image" loading="lazy" />
+        <div class="gallery-overlay"><span class="image-category">Go Nomads</span><h3 class="image-title">Gathering</h3></div>
+      </div>
+
+    </section>
+  </main>
+
+  <footer style="background: var(--forest-dark); padding: 48px 24px; text-align: center; color: rgba(255,255,255,0.7); font-size: 0.8rem;">
+    <div style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; align-items: center;">
+      <span style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 800; color: var(--white); letter-spacing: 0.1em;">TRIBES OF NOMAD</span>
+      <p>A doorway into the tribe. • Pondicherry & Auroville</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuToggle = document.getElementById('menuToggle');
+      const navMenu = document.getElementById('navMenu');
+
+      if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', function() {
+          navMenu.classList.toggle('show');
+        });
+
+        // Close the menu when a link is clicked
+        const navLinks = navMenu.querySelectorAll('a');
+        navLinks.forEach(link => {
+          link.addEventListener('click', () => {
+            navMenu.classList.remove('show');
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>
